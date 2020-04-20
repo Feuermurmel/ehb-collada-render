@@ -7,8 +7,7 @@ import sys
 from PIL import Image, ImageDraw
 import collada
 import numpy
-
-from colladarender.colors import get_color_map
+import matplotlib.cm
 
 
 def log(message):
@@ -59,14 +58,10 @@ def render(output_image_file, input_dae_files):
             for i in iter_triangles_from_collada_file(path):
                 yield sum(i[:, 1]), i
 
-    def get_color(x):
-        return color_map[
-            max(0, min(len(color_map) - 1, math.floor(x * len(color_map))))]
-
     random.seed(0)
 
     triangles = sorted(iter_triangles(), key=lambda x: x[0])
-    color_map = get_color_map()
+    color_map = matplotlib.cm.get_cmap('plasma')
     scale = 8
 
     min_height = triangles[0][0]
@@ -101,8 +96,8 @@ def render(output_image_file, input_dae_files):
             if not math.isfinite(scaled_height):
                 scaled_height = 0
 
-            fill_color = get_color(scaled_height)
-            line_color = get_color(scaled_height + 0.05)
+            fill_color = color_map(scaled_height)
+            line_color = color_map(scaled_height + 0.15)
 
             points = [
                 tuple(vertex)
