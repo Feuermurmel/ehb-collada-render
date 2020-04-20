@@ -64,9 +64,6 @@ def render(output_image_file, input_dae_files):
     color_map = matplotlib.cm.get_cmap('plasma')
     scale = 8
 
-    min_height = triangles[0][0]
-    max_height = triangles[-1][0]
-
     x_coordinates = [j for i in triangles for j in i[1][:, 0]]
     y_coordinates = [j for i in triangles for j in i[1][:, 2]]
 
@@ -89,8 +86,10 @@ def render(output_image_file, input_dae_files):
         draw = ImageDraw.Draw(image)
 
         for height, vertices in triangles:
-            scaled_height = \
-                (height - min_height) / (max_height - min_height)
+            # Use the same value range for all  so that comparisons
+            # between renderings of different levels are possible. Level
+            # geometry outside the range 0..10 is rare.
+            scaled_height = 0 if height < 0 else (height / 150) ** 0.4
 
             # Happens if all vertices triangles have the same height.
             if not math.isfinite(scaled_height):
