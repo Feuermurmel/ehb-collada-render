@@ -1,8 +1,8 @@
 import setuptools
 
 name = 'collada-render'
-dependencies = []
-dependencies_dev = ['pytest']
+dependencies = ['pycollada', 'Pillow']
+dependencies_dev = []
 console_scripts = ['collada-render = colladarender:entry_point']
 
 setuptools.setup(
